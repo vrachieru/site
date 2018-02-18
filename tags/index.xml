@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Victor Rachieru</title>
+    <link>http://victorrachieru.com/tags/</link>
+    <description>Recent content in Tags on Victor Rachieru</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 30 Jan 2018 22:13:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://victorrachieru.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Docker</title>
+      <link>http://victorrachieru.com/tags/docker/</link>
+      <pubDate>Tue, 30 Jan 2018 22:13:00 +0000</pubDate>
+      
+      <guid>http://victorrachieru.com/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Virtualbox</title>
+      <link>http://victorrachieru.com/tags/virtualbox/</link>
+      <pubDate>Tue, 30 Jan 2018 22:13:00 +0000</pubDate>
+      
+      <guid>http://victorrachieru.com/tags/virtualbox/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Windows</title>
+      <link>http://victorrachieru.com/tags/windows/</link>
+      <pubDate>Tue, 30 Jan 2018 22:13:00 +0000</pubDate>
+      
+      <guid>http://victorrachieru.com/tags/windows/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

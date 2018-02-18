@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on Victor Rachieru</title>
+    <link>http://victorrachieru.com/tags/docker/</link>
+    <description>Recent content in Docker on Victor Rachieru</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 30 Jan 2018 22:13:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://victorrachieru.com/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using both Docker and Virtualbox on Windows</title>
+      <link>http://victorrachieru.com/posts/using-both-docker-and-virtualbox-on-windows/</link>
+      <pubDate>Tue, 30 Jan 2018 22:13:00 +0000</pubDate>
+      
+      <guid>http://victorrachieru.com/posts/using-both-docker-and-virtualbox-on-windows/</guid>
+      <description>Oracle VirtualBox is a free and open-source hypervisor for x86-64 computers currently being developed by the Oracle Corporation.
+Microsoft Hyper-V, codenamed Viridian and formerly known as Windows Server Virtualization, is a native hypervisor; it can create virtual machines on x86-64 systems running Windows.
+The two are not exactly the same kind of hypervisor but we won&amp;rsquo;t get into that now.
+It turns out that when Hyper-V is installed on your Windows box, the hypervisor is running all the time underneath the host OS.</description>
+    </item>
+    
+  </channel>
+</rss>

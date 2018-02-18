@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		
+		<meta name="generator" content="Hugo 0.36" />
+		<title>Using both Docker and Virtualbox on Windows &middot; Victor Rachieru</title>
+		<link rel="shortcut icon" href="http://victorrachieru.com/images/favicon.ico">
+		<link rel="stylesheet" href="http://victorrachieru.com/css/style.css">
+		<link rel="stylesheet" href="http://victorrachieru.com/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="http://victorrachieru.com/css/monosocialiconsfont.css">
+		
+
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://victorrachieru.com/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='http://victorrachieru.com/posts'>Archive</a>
+	<a href='http://victorrachieru.com/tags'>Tags</a>
+	<a href='http://victorrachieru.com/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Using both Docker and Virtualbox on Windows
+                    </h1>
+                    <h2 class="headline">
+                    Jan 30, 2018 22:13
+                    · 889 words
+                    · 5 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="http://victorrachieru.com/tags/windows">windows</a>
+                          
+                              <a href="http://victorrachieru.com/tags/docker">docker</a>
+                          
+                              <a href="http://victorrachieru.com/tags/virtualbox">virtualbox</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                <section id="post-body">
+                    
+
+<p>Oracle VirtualBox is a free and open-source hypervisor for x86-64 computers currently being developed by the Oracle Corporation.<br />
+Microsoft Hyper-V, codenamed Viridian and formerly known as Windows Server Virtualization, is a native hypervisor; it can create virtual machines on x86-64 systems running Windows.<br />
+The two are not exactly the same kind of hypervisor but we won&rsquo;t get into that now.</p>
+
+<p>It turns out that when Hyper-V is installed on your Windows box, the hypervisor is running all the time underneath the host OS.<br />
+As only one thing can control the VT hardware at a time (for stability), the hypervisor blocks all other calls to the VT hardware.<br />
+In other words, Hyper-V must be turned off in order to use VirtualBox.</p>
+
+<p>The nasty part is that Docker actually needs Hyper-V in order to run on Windows.<br />
+To fix that, there are two options, so you can get the best out of both worlds:</p>
+
+<h1 id="toggling-hyper-v">Toggling Hyper-V</h1>
+
+<p>You can remove Hyper-V from you system via <code>Turn Windows features on or off</code> and reboot your system.<br />
+As far as I know, this actually (un)installs Hyper-V from your computer and doing so repeatedly might cause you to end up with a registry mess.</p>
+
+<p>You can disable Hyper-V without uninstalling it by starting a command prompt with administrator rights and executing the following command:</p>
+
+<pre><code>bcdedit /set hypervisorlaunchtype off
+</code></pre>
+
+<p>If you want to enable it, then run this command:</p>
+
+<pre><code>bcdedit /set hypervisorlaunchtype auto
+</code></pre>
+
+<p>This solution still needs a reboot, but you don&rsquo;t mess up your registry and don&rsquo;t lose configuration settings.</p>
+
+<h1 id="making-use-of-docker-machine">Making use of Docker-Machine</h1>
+
+<p>In the early days (pre Docker v1.12) Docker didn&rsquo;t run on native Mac or Windows OS, so another tool was created, Docker-Machine.<br />
+Docker-Machine creates a virtual machine (using yet another tool, e.g. Oracle VirtualBox), runs Docker on that VM, and helps coordinate between the host OS and the Docker VM.</p>
+
+<p>You can check if you have Docker-Machine installed by running the following command:</p>
+
+<pre><code>$ docker-machine -v
+docker-machine.exe version 0.13.0, build 9ba6da9
+</code></pre>
+
+<p>If the output is not similar to the one above, install it by running the following command as described <a href="https://docs.docker.com/machine/install-machine/#install-machine-directly">here</a>:</p>
+
+<pre><code>$ if [[ ! -d &quot;$HOME/bin&quot; ]]; then mkdir -p &quot;$HOME/bin&quot;; fi &amp;&amp; \
+curl -L https://github.com/docker/machine/releases/download/v0.13.0/docker-machine-Windows-x86_64.exe &gt; &quot;$HOME/bin/docker-machine.exe&quot; &amp;&amp; \
+chmod +x &quot;$HOME/bin/docker-machine.exe&quot;
+</code></pre>
+
+<p>Now that we have installed docker-machine we are able to create a new environment.<br />
+In case you already had docker-machine installed we can first have a look on what machines we have available using the following command:</p>
+
+<pre><code>$ docker-machine ls
+NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS
+default   *        virtualbox   Running   tcp://192.168.99.100:2376           v18.01.0-ce
+</code></pre>
+
+<p>In case you already have one or more machines present you might want to use one of those.<br />
+To create a new Docker machine run the following command:</p>
+
+<pre><code>$ docker-machine create --driver virtualbox default # where 'default' is the new machine name
+Running pre-create checks...
+(default) Image cache directory does not exist, creating it at C:\Users\vrachieru\.docker\machine\cache...
+(default) No default Boot2Docker ISO found locally, downloading the latest release...
+(default) Latest release for github.com/boot2docker/boot2docker is v18.01.0-ce
+(default) Downloading C:\Users\vrachieru\.docker\machine\cache\boot2docker.iso from https://github.com/boot2docker/boot2docker/releases/download/v18.01.0-ce/boot2docker.iso...
+(default) 0%....10%....20%....30%....40%....50%....60%....70%....80%....90%....100%
+Creating machine...
+(default) Copying C:\Users\vrachieru\.docker\machine\cache\boot2docker.iso to C:\Users\vrachieru\.docker\machine\machines\default\boot2docker.iso...
+(default) Creating VirtualBox VM...
+(default) Creating SSH key...
+(default) Starting the VM...
+(default) Check network to re-create if needed...
+(default) Windows might ask for the permission to create a network adapter. Sometimes, such confirmation window is minimized in the taskbar.
+(default) Found a new host-only adapter: &quot;VirtualBox Host-Only Ethernet Adapter #2&quot;
+(default) Windows might ask for the permission to configure a network adapter. Sometimes, such confirmation window is minimized in the taskbar.
+(default) Windows might ask for the permission to configure a dhcp server. Sometimes, such confirmation window is minimized in the taskbar.
+(default) Waiting for an IP...
+Waiting for machine to be running, this may take a few minutes...
+Detecting operating system of created instance...
+Waiting for SSH to be available...
+Detecting the provisioner...
+Provisioning with boot2docker...
+Copying certs to the local machine directory...
+Copying certs to the remote machine...
+Setting Docker configuration on the remote daemon...
+Checking connection to Docker...
+Docker is up and running!
+To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe env default
+</code></pre>
+
+<p>Since Docker isn&rsquo;t running on your actual host OS, docker-machine needs to deal with IP addresses and ports and volumes and such.<br />
+Its settings are saved in environment variables, which means you have to run the following command every time you open a new shell:</p>
+
+<pre><code>eval $(docker-machine env default)
+</code></pre>
+
+<p>Thus far I&rsquo;ve assumed that you&rsquo;re using Bash/Cygwin or some other shell emulation tool.<br />
+If you want to use CMD or PowerShell just run the following and follow the instructions profided on the last lines outputted:</p>
+
+<pre><code>$ docker-machine env default
+export DOCKER_TLS_VERIFY=&quot;1&quot;
+export DOCKER_HOST=&quot;tcp://192.168.99.100:2376&quot;
+export DOCKER_CERT_PATH=&quot;C:\Users\vrachieru\.docker\machine\machines\default&quot;
+export DOCKER_MACHINE_NAME=&quot;default&quot;
+export COMPOSE_CONVERT_WINDOWS_PATHS=&quot;true&quot;
+# Run this command to configure your shell:
+# eval $(&quot;C:\Program Files\Docker\Docker\Resources\bin\docker-machine.exe&quot; env default)
+</code></pre>
+
+<p>Now we&rsquo;ll be able to use Docker on Windows again.<br />
+Lets try using the <code>docker/whalesay</code> image to test our Docker environment.</p>
+
+<pre><code>$ docker run docker/whalesay cowsay &quot;Awesome! Your Docker environment is running oldschool, without Hyper-V.&quot;
+/ Awesome! Your Docker environment is \
+\ running oldschool, without Hyper-V. /
+ -------------------------------------
+    \
+     \
+      \
+                    ##        .
+              ## ## ##       ==
+           ## ## ## ##      ===
+       /&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;___/ ===
+  ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+       \______ o          __/
+        \    \        __/
+          \____\______/
+</code></pre>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="http://victorrachieru.com/js/jquery-3.3.1.min.js"></script>
+<script src="http://victorrachieru.com/js/main.js"></script>
+<script src="http://victorrachieru.com/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>
